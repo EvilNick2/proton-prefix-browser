@@ -1,0 +1,43 @@
+name: Build & Attach Release Asset
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build plugin
+        run: bun run build
+
+      - name: Stage release files
+        run: |
+          mkdir -p _release/proton-prefix-browser
+          cp plugin.json _release/proton-prefix-browser/
+          cp README.md _release/proton-prefix-browser/
+          cp LICENSE _release/proton-prefix-browser/
+          cp -r backend _release/proton-prefix-browser/
+          cp -r .millennium _release/proton-prefix-browser/
+
+      - name: Create zip archive
+        run: |
+          cd _release
+          zip -r "../proton-prefix-browser-${{ github.event.release.tag_name }}.zip" proton-prefix-browser
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: proton-prefix-browser-*.zip
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,25 @@
+{
+  "name": "proton-prefix-browser",
+  "version": "1.0.0",
+  "description": "Browse a Steam game's Proton prefix from its context menu.",
+  "type": "module",
+  "main": "./frontend/index.jsx",
+  "author": "EvilNick2",
+  "license": "MIT",
+  "scripts": {
+    "dev": "millennium-ttc --build dev",
+    "build": "millennium-ttc --build prod"
+  },
+  "dependencies": {
+    "@steambrew/api": "^5.8.4",
+    "@steambrew/client": "^5.8.4",
+    "@steambrew/ttc": "^3.3.7"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "@types/react": "16.14.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/webpack": "^5.28.5"
+  }
+}

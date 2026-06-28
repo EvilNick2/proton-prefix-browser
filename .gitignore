@@ -1,0 +1,15 @@
+# Build output (Millennium compiles on the user's machine)
+.millennium/
+
+# Dependencies
+node_modules/
+
+# Lockfiles from package managers other than the one you commit
+package-lock.json
+yarn.lock
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+*.log
