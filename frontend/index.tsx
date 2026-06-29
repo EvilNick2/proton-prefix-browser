@@ -70,7 +70,11 @@ async function addPrefixButton(popupDocument: any, appid: number) {
 
   const prefixButton = gearButton.cloneNode(true);
   prefixButton.classList.add("proton-prefix-button");
-  prefixButton.firstChild.innerHTML = "\u{1F5C0}";
+  const focusable = prefixButton.firstChild;
+  if (focusable) {
+    focusable.innerHTML = "PP";
+    if (focusable.setAttribute) focusable.setAttribute("aria-label", "Browse Proton Prefix");
+  }
   prefixButton.title = "Browse Proton Prefix";
   gearButton.parentNode.insertBefore(prefixButton, gearButton.nextSibling);
 
