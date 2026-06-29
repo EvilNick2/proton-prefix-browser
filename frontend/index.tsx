@@ -25,6 +25,9 @@ const BROWSE_LOCAL_LABELS = ["Browse local files"];
 
 const prefixCache = new Map<number, string>();
 
+const teardowns: Array<() => void> = [];
+const wiredPopups = new WeakSet<any>();
+
 async function resolvePrefix(appid: number): Promise<string> {
   const cached = prefixCache.get(appid);
   if (cached !== undefined) return cached;
@@ -165,7 +168,7 @@ function watchForContextMenus(popup: any) {
   const container = popup.m_popup.document.getElementById("popup_target");
   if (!container) return;
 
-  container.addEventListener("mousedown", (e: any) => {
+  const onMouseDown = (e: any) => {
     lastCardAppId = null;
     lastCardName = "";
     try {
@@ -184,7 +187,9 @@ function watchForContextMenus(popup: any) {
       }
     } catch {}
     warmPrefix(resolveMenuAppId());
-  });
+  };
+  container.addEventListener("mousedown", onMouseDown);
+  teardowns.push(() => container.removeEventListener("mousedown", onMouseDown));
 
   const observer = new MutationObserver((list) => {
     for (const mutation of list) {
@@ -201,10 +206,13 @@ function watchForContextMenus(popup: any) {
     }
   });
   observer.observe(container, { childList: true, subtree: true });
+  teardowns.push(() => observer.disconnect());
 }
 
 async function onPopupCreation(popup: any) {
   if (popup.m_strName !== "SP Desktop_uid0") return;
+  if (wiredPopups.has(popup)) return;
+  wiredPopups.add(popup);
 
   await sleep(10000);
 
@@ -215,7 +223,7 @@ async function onPopupCreation(popup: any) {
 
   watchForContextMenus(popup);
 
-  MainWindowBrowserManager.m_browser.on("finished-request", async () => {
+  const onFinishedRequest = async () => {
     const pathname = MainWindowBrowserManager.m_lastLocation.pathname;
     const appid = appIdFromPath(pathname);
     if (appid === null || !pathname.startsWith("/library/app/")) return;
@@ -223,10 +231,21 @@ async function onPopupCreation(popup: any) {
     try {
       await addPrefixButton(popup.m_popup.document, appid);
     } catch (err) {}
-  });
+  };
+  MainWindowBrowserManager.m_browser.on("finished-request", onFinishedRequest);
+  teardowns.push(() =>
+    MainWindowBrowserManager.m_browser.off?.("finished-request", onFinishedRequest)
+  );
 }
 
 export default definePlugin(async () => {
   Millennium.AddWindowCreateHook(onPopupCreation);
-  return { title: "Proton Prefix Browser" };
+  return {
+    title: "Proton Prefix Browser",
+    onDismount() {
+      for (const teardown of teardowns.splice(0)) {
+        try { teardown(); } catch {}
+      }
+    },
+  };
 });
