@@ -1,6 +1,6 @@
 {
   "name": "proton-prefix-browser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browse a Steam game's Proton prefix from its context menu.",
   "type": "module",
   "main": "./frontend/index.jsx",
