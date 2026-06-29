@@ -1,9 +1,8 @@
 {
     "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
-
     "name": "proton-prefix-browser",
     "common_name": "Proton Prefix Browser",
     "description": "Adds a 'Browse Proton Prefix' entry to a game's menu, next to 'Browse local files', that opens its steamapps/compatdata/<appid>/pfx folder.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "backendType": "lua"
 }
