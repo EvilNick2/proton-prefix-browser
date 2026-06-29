@@ -24,7 +24,7 @@ shortcut where you'd already look for it.
   uses. So it respects whatever file manager you've set and doesn't care how
   Steam was started (native, Flatpak, extra library drives, and so on).
 - Stays hidden for games that don't have a prefix.
-- Also drops a small folder button next to the gear on a game's page, if you'd
+- Also drops a small "PP" button next to the gear on a game's page, if you'd
   rather grab it without opening a menu.
 
 ## Installing
